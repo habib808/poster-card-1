@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nahdah24 - Professional News Card Generator</title>
+    <!-- Google Fonts for Bengali and English -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- html2canvas to export HTML as Image -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #d32f2f;
+            --primary-dark: #b71c1c;
+            --bg-dashboard: #f4f6f9;
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Hind Siliguri', 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dashboard);
+            color: #333;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        /* Control Panel Styles */
+        .control-panel {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .control-panel h2 {
+            font-size: 22px;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .form-group input[type="text"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 8px rgba(211, 47, 47, 0.2);
+        }
+
+        .color-pickers {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .color-picker-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f9f9f9;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        .color-picker-wrapper input[type="color"] {
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .range-slider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .range-slider input {
+            flex: 1;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .btn-file {
+            border: 2px dashed #bbb;
+            color: #777;
+            background-color: #fafafa;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            display: block;
+            transition: all 0.3s;
+        }
+
+        .btn-file:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background-color: #fff5f5;
+        }
+
+        .file-input-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .btn-download {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-color), #ff5252);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(211, 47, 47, 0.3);
+        }
+
+        .btn-download:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(211, 47, 47, 0.4);
+        }
+
+        /* Live Preview Card Container */
+        .preview-container {
+            position: sticky;
+            top: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .preview-title {
+            font-weight: bold;
+            color: #555;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* The Actual Live News Card (1:1 Square Ratio for Social Media) */
+        #newsCard {
+            width: 600px;
+            height: 600px;
+            background: #ffffff;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            border-radius: 0px;
+        }
+
+        /* Top Decorative Subtle Dotted Pattern */
+        .card-dots {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100px;
+            height: 100px;
+            background-image: radial-gradient(#d32f2f 1.5px, transparent 1.5px);
+            background-size: 8px 8px;
+            opacity: 0.15;
+            z-index: 5;
+        }
+
+        /* Category Tag */
+        .category-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            letter-spacing: 0.5px;
+            display: block;
+        }
+
+        /* Date Badge */
+        .date-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            z-index: 10;
+        }
+
+        /* Image Display Window */
+        .card-image-area {
+            width: 90%;
+            height: 58%;
+            margin: 25px auto 0 auto;
+            background-color: #f0f2f5;
+            border-radius: 14px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+        }
+
+        .card-image-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            transition: transform 0.1s;
+        }
+
+        .placeholder-icon {
+            font-size: 80px;
+            color: #ccc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .placeholder-icon span {
+            font-size: 14px;
+            color: #999;
+            font-weight: 600;
+        }
+
+        /* Center Media Logo from User Link */
+        .media-logo-wrapper {
+            position: absolute;
+            bottom: 33%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+            background: white;
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            border: 3px solid #fff;
+            overflow: hidden;
+        }
+
+        .media-logo-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Text Content Area */
+        .card-text-area {
+            flex: 1;
+            background-color: #ffffff;
+            margin: 0 25px 75px 25px;
+            border-radius: 16px;
+            padding: 30px 20px 20px 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 10;
+            border: 1px solid #f0f0f0;
+            overflow: hidden;
+            max-height: 140px;
+        }
+
+        .news-title {
+            font-size: 24px; /* Default starting font size */
+            font-weight: 700;
+            line-height: 1.4;
+            color: #111;
+            word-wrap: break-word;
+            width: 100%;
+            max-height: 110px;
+            overflow: hidden;
+        }
+
+        /* Footer Branding Strip */
+        .card-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background-color: #fffde7;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 20px;
+            border-top: 1px solid #f0ecb9;
+        }
+
+        .footer-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        .footer-item i { font-size: 14px; }
+        .footer-item.fb i { color: #1877F2; }
+        .footer-item.web i { color: #E1306C; }
+        .footer-item.yt i { color: #FF0000; }
+    </style>
+</head>
+<body>
+
+    <!-- Control Panel -->
+    <div class="control-panel">
+        <h2><i class="fa-solid fa-sliders"></i> নিউজ কার্ড কন্ট্রোল প্যানেল</h2>
+        
+        <!-- Image Upload -->
+        <div class="form-group">
+            <label><i class="fa-solid fa-image"></i> খবরের ছবি আপলোড করুন</label>
+            <div class="file-input-wrapper">
+                <div class="btn-file"><i class="fa-solid fa-cloud-arrow-up"></i> ইমেজ সিলেক্ট করুন</div>
+                <input type="file" id="imageLoader" accept="image/*" />
+            </div>
+        </div>
+
+        <!-- Image Position Adjustments -->
+        <div class="form-group">
+            <label><i class="fa-solid fa-arrows-up-down"></i> ইমেজ পজিশন ভার্টিকাল (Y-Axis)</label>
+            <div class="range-slider">
+                <input type="range" id="imageY" min="0" max="100" value="50">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label><i class="fa-solid fa-maximize"></i> ইমেজ সাইজ জুম (Scale)</label>
+            <div class="range-slider">
+                <input type="range" id="imageScale" min="100" max="200" value="100">
+            </div>
+        </div>
+
+        <!-- Title Input -->
+        <div class="form-group">
+            <label><i class="fa-solid fa-pen-to-square"></i> নিউজের শিরোনাম (Title)</label>
+            <textarea id="titleInput" rows="3" placeholder="এখানে নিউজের আকর্ষণীয় টাইটেলটি লিখুন..."></textarea>
+        </div>
+
+        <!-- Category Selection -->
+        <div class="form-group">
+            <label><i class="fa-solid fa-tags"></i> নিউজের ধরন (Category)</label>
+            <select id="categoryInput">
+                <option value="জাতীয়">জাতীয় (National)</option>
+                <option value="আন্তর্জাতিক">আন্তর্জাতিক (International)</option>
+                <option value="রাজনীতি">রাজনীতি (Politics)</option>
+                <option value="খেলাধুলা">খেলাধুলা (Sports)</option>
+                <option value="বিনোদন">বিনোদন (Entertainment)</option>
+                <option value="প্রযুক্তি">প্রযুক্তি (Technology)</option>
+                <option value="ব্রেকিং নিউজ">ব্রেকিং নিউজ (Breaking News)</option>
+                <option value="no_category">কোনো ক্যাটাগরি নয় (No Category)</option>
+            </select>
+        </div>
+
+        <!-- Manual Color Styling Controls -->
+        <div class="form-group">
+            <label><i class="fa-solid fa-palette"></i> কালার কাস্টমাইজেশন (ম্যানুয়াল)</label>
+            <div class="color-pickers">
+                <div class="color-picker-wrapper">
+                    <input type="color" id="accentColor" value="#d32f2f">
+                    <span style="font-size:12px; font-weight:600;">অ্যাকসেন্ট</span>
+                </div>
+                <div class="color-picker-wrapper">
+                    <input type="color" id="textColor" value="#111111">
+                    <span style="font-size:12px; font-weight:600;">টেক্সট কালার</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Auto Design / Auto Color Suggestion Toggle -->
+        <div class="form-group" style="display: flex; align-items: center; gap: 10px; background: #fffde7; padding: 10px; border-radius: 8px; border: 1px solid #f0ecb9;">
+            <input type="checkbox" id="autoColorToggle" checked style="width: 18px; height: 18px; cursor: pointer;">
+            <label for="autoColorToggle" style="margin-bottom: 0; cursor: pointer; color: #555;">টাইটেলের ধরন অনুযায়ী অটো কালার পরিবর্তন করুন</label>
+        </div>
+
+        <!-- Download Button -->
+        <button class="btn-download" id="downloadBtn">
+            <i class="fa-solid fa-square-poll-horizontal"></i> এইচডি পোস্টার ডাউনলোড করুন
+        </button>
+    </div>
+
+    <!-- Live Preview Canvas -->
+    <div class="preview-container">
+        <div class="preview-title"><i class="fa-solid fa-eye"></i> লাইভ প্রিভিউ (Live Preview)</div>
+        
+        <!-- Target Card to Convert to Image -->
+        <div id="newsCard">
+            <!-- Top design elements -->
+            <div class="card-dots"></div>
+            <div class="category-badge" id="cardCategory">জাতীয়</div>
+            <div class="date-badge" id="cardDate">১১ জুন, ২০২৬</div>
+
+            <!-- News Image Section -->
+            <div class="card-image-area">
+                <div class="placeholder-icon" id="placeholder">
+                    <i class="fa-regular fa-images"></i>
+                    <span>খবরের ছবি আপলোড করুন</span>
+                </div>
+                <img id="cardImg" src="" alt="" style="display: none;" />
+            </div>
+
+            <!-- Custom Logo Image Embedded Directly -->
+            <div class="media-logo-wrapper">
+                <img class="media-logo-img" src="./width_150.webp" alt="Nahdah Logo">
+            
+            </div>
+
+            <!-- Title Section -->
+            <div class="card-text-area" id="cardTextArea">
+                <div class="news-title" id="cardTitle">এখানে নিউজের টাইটেল দিন এবং আকর্ষণীয় নিউজ পোস্টার তৈরি করুন</div>
+            </div>
+
+            <!-- Footer Strip -->
+            <div class="card-footer">
+                <div class="footer-item fb">
+                    <i class="fa-brands fa-facebook"></i>
+                    <span>Nahdah24</span>
+                </div>
+                <div class="footer-item web">
+                    <i class="fa-solid fa-globe"></i>
+                    <span>nahdah24.com</span>
+                </div>
+                <div class="footer-item yt">
+                    <i class="fa-brands fa-youtube"></i>
+                    <span>@Nahdah</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive JavaScript logic -->
+    <script>
+        // DOM Elements
+        const imageLoader = document.getElementById('imageLoader');
+        const cardImg = document.getElementById('cardImg');
+        const placeholder = document.getElementById('placeholder');
+        const imageY = document.getElementById('imageY');
+        const imageScale = document.getElementById('imageScale');
+        
+        const titleInput = document.getElementById('titleInput');
+        const cardTitle = document.getElementById('cardTitle');
+        const cardTextArea = document.getElementById('cardTextArea');
+        
+        const categoryInput = document.getElementById('categoryInput');
+        const cardCategory = document.getElementById('cardCategory');
+        const cardDate = document.getElementById('cardDate');
+        
+        const accentColorPicker = document.getElementById('accentColor');
+        const textColorPicker = document.getElementById('textColor');
+        const autoColorToggle = document.getElementById('autoColorToggle');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        // Dynamic Font Resizer to adjust large titles automatically
+        function adjustFontSize() {
+            let fontSize = 24; // Default starting font size in pixels
+            cardTitle.style.fontSize = fontSize + "px";
+            
+            // Loop to reduce font size down if text height overflows container bounds
+            while (cardTextArea.scrollHeight > cardTextArea.clientHeight && fontSize > 14) {
+                fontSize -= 1;
+                cardTitle.style.fontSize = fontSize + "px";
+            }
+        }
+
+        // Auto-set modern Bengali formatted current date
+        function setBengaliDate() {
+            const date = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            let bengaliDate = date.toLocaleDateString('bn-BD', options);
+            cardDate.innerText = bengaliDate;
+        }
+        setBengaliDate();
+
+        // Topic/Keywords Category to Color mapping dictionary
+        const themeMap = {
+            'জাতীয়': { accent: '#d32f2f', text: '#111111' },
+            'আন্তর্জাতিক': { accent: '#0288d1', text: '#0d47a1' },
+            'রাজনীতি': { accent: '#e65100', text: '#212121' },
+            'খেলাধুলা': { accent: '#388e3c', text: '#1b5e20' },
+            'বিনোদন': { accent: '#7b1fa2', text: '#4a148c' },
+            'প্রযুক্তি': { accent: '#00796b', text: '#004d40' },
+            'ব্রেকিং নিউজ': { accent: '#c62828', text: '#000000' }
+        };
+
+        // Handle Image Upload and rendering inside the frame
+        imageLoader.addEventListener('change', function(e) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                cardImg.src = event.target.result;
+                cardImg.style.display = 'block';
+                placeholder.style.display = 'none';
+                resetImageAdjustments();
+            }
+            if(e.target.files[0]) {
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+
+        // Image positioning & zooming functions
+        function updateImageTransform() {
+            const yValue = imageY.value;
+            const scaleValue = imageScale.value / 100;
+            cardImg.style.transform = `scale(${scaleValue})`;
+            cardImg.style.objectPosition = `center ${yValue}%`;
+        }
+
+        function resetImageAdjustments() {
+            imageY.value = 50;
+            imageScale.value = 100;
+            updateImageTransform();
+        }
+
+        imageY.addEventListener('input', updateImageTransform);
+        imageScale.addEventListener('input', updateImageTransform);
+
+        // Dynamic Title text updating with font-scaling trigger
+        titleInput.addEventListener('input', function() {
+            if(this.value.trim() === "") {
+                cardTitle.innerText = "এখানে নিউজ টাইটেল দিন এবং আকর্ষণীয় নিউজ পোস্টার তৈরি করুন";
+            } else {
+                cardTitle.innerText = this.value;
+            }
+            autoDetectCategoryAndTheme();
+            adjustFontSize(); // Auto size text adjustment trigger
+        });
+
+        // Theme and Category change events
+        categoryInput.addEventListener('change', function() {
+            if(this.value === "no_category") {
+                cardCategory.style.display = "none";
+            } else {
+                cardCategory.style.display = "block";
+                cardCategory.innerText = this.value;
+            }
+            applyTheme();
+        });
+
+        // Apply theme color settings
+        function applyTheme() {
+            const currentCategory = categoryInput.value;
+            if (autoColorToggle.checked && currentCategory !== "no_category") {
+                if (themeMap[currentCategory]) {
+                    const theme = themeMap[currentCategory];
+                    accentColorPicker.value = theme.accent;
+                    textColorPicker.value = theme.text;
+                }
+            }
+            
+            const activeAccent = accentColorPicker.value;
+            const activeText = textColorPicker.value;
+            
+            cardCategory.style.backgroundColor = activeAccent;
+            cardTitle.style.color = activeText;
+        }
+
+        // Auto keyword detection inside title to switch category and design automatically
+        function autoDetectCategoryAndTheme() {
+            if (!autoColorToggle.checked) return;
+            
+            const titleText = titleInput.value.toLowerCase();
+            let matched = true;
+
+            if (titleText.includes('মেসি') || titleText.includes('ক্রিকেট') || titleText.includes('ফুটবল') || titleText.includes('খেলা') || titleText.includes('রান')) {
+                categoryInput.value = 'খেলাধুলা';
+            } else if (titleText.includes('ভোট') || titleText.includes('নির্বাচন') || titleText.includes('বিএনপি') || titleText.includes('আওয়ামী') || titleText.includes('মন্ত্রী')) {
+                categoryInput.value = 'রাজনীতি';
+            } else if (titleText.includes('যুক্তরাষ্ট্র') || titleText.includes('বিশ্ব') || titleText.includes('ভারত') || titleText.includes('চীন') || titleText.includes('বিদেশ')) {
+                categoryInput.value = 'আন্তর্জাতিক';
+            } else if (titleText.includes('সিনেমা') || titleText.includes('নাটক') || titleText.includes('তারকা') || titleText.includes('বলিউড') || titleText.includes('শাকিব')) {
+                categoryInput.value = 'বিনোদন';
+            } else if (titleText.includes('স্মার্টফোন') || titleText.includes('আইটি') || titleText.includes('এআই') || titleText.includes('ফেসবুক') || titleText.includes('গুগল')) {
+                categoryInput.value = 'প্রযুক্তি';
+            } else if (titleText.includes('ভয়াবহ') || titleText.includes('ব্রেকিং') || titleText.includes('জরুরি') || titleText.includes('নিহত')) {
+                categoryInput.value = 'ব্রেকিং নিউজ';
+            } else {
+                matched = false; // Keep user's manually chosen selection if no keyword fits
+            }
+            
+            if (matched && categoryInput.value !== "no_category") {
+                cardCategory.style.display = "block";
+                cardCategory.innerText = categoryInput.value;
+            }
+            applyTheme();
+        }
+
+        // Event listeners for color inputs
+        accentColorPicker.addEventListener('input', () => {
+            autoColorToggle.checked = false; 
+            applyTheme();
+        });
+        textColorPicker.addEventListener('input', () => {
+            autoColorToggle.checked = false;
+            applyTheme();
+        });
+        autoColorToggle.addEventListener('change', applyTheme);
+
+        // Export/Download Poster Card Functionality via html2canvas
+        downloadBtn.addEventListener('click', function() {
+            downloadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> প্রসেসিং হচ্ছে...';
+            downloadBtn.disabled = true;
+
+            const card = document.getElementById('newsCard');
+            
+            html2canvas(card, {
+                useCORS: true,
+                allowTaint: true,
+                scale: 2, 
+                logging: false
+            }).then(canvas => {
+                const imageURI = canvas.toDataURL('image/png');
+                const downloadLink = document.createElement('a');
+                const filename = `Nahdah24_News_Card_${new Date().getTime()}.png`;
+                
+                downloadLink.download = filename;
+                downloadLink.href = imageURI;
+                
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+                
+                downloadBtn.innerHTML = '<i class="fa-solid fa-square-poll-horizontal"></i> এইচডি পোস্টার ডাউনলোড করুন';
+                downloadBtn.disabled = false;
+            }).catch(err => {
+                console.error("Error generating image:", err);
+                alert("পোস্টার ইমেজ তৈরিতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+                downloadBtn.innerHTML = '<i class="fa-solid fa-square-poll-horizontal"></i> এইচডি পোস্টার ডাউনলোড করুন';
+                downloadBtn.disabled = false;
+            });
+        });
+
+        // Initialize design styles on load
+        applyTheme();
+    </script>
+</body>
+</html>
