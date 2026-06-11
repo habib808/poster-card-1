@@ -267,21 +267,28 @@
 
         /* Image Display Window */
         .card-image-area {
-    width: 100%; /* ডিফল্ট উইডথ */
-    height: auto; /* হাইট অটো থাকবে যাতে জুম করলে রেশিও ঠিক থাকে */
-    position: absolute;
-    top: 0; /* আমরা জাভাস্ক্রিপ্ট দিয়ে এই top পরিবর্তন করব */
-    left: 50%;
-    transform: translateX(-50%); /* ছবিকে সবসময় মাঝখানে রাখবে */
-    transition: none; /* লাইভ ড্র্যাগিং বা স্লাইড করার সময় স্মুথনেসের জন্য ট্রানজিশন বন্ধ রাখাই ভালো */
+            width: 90%;
+            height: 58%;
+            margin: 25px auto 0 auto;
+            background-color: #f0f2f5;
+            border-radius: 14px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
         }
 
+        /* FIXED: html2canvas ফ্রেন্ডলি ইমেজ পজিশনিং */
         .card-image-area img {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            height: auto;
             position: absolute;
-            transition: transform 0.1s;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: none;
         }
 
         .placeholder-icon {
@@ -291,6 +298,8 @@
             flex-direction: column;
             align-items: center;
             gap: 10px;
+            position: absolute;
+            z-index: 1;
         }
         .placeholder-icon span {
             font-size: 14px;
@@ -298,23 +307,22 @@
             font-weight: 600;
         }
 
-        /* Center Media Logo from User Link */
+        /* FIXED: html2canvas ফ্রেন্ডলি ফিক্সড লোগো পজিশনিং (left: 266px) */
         .media-logo-wrapper {
-           position: absolute;
-    bottom: 33%;
-    /* transform বাদ দিয়ে লোগো মাঝখানে আনার নতুন নিয়ম */
-    left: 266px; /* (৬০০ পিক্সেল কার্ডের মাঝখান = ৩০০ পিক্সেল। লোগোর সাইজ ৬৮ পিক্সেল এর অর্ধেক ৩৪ পিক্সেল বাদ দিলে ২৬৬ পিক্সেল হয়) */
-    z-index: 20;
-    background: white;
-    width: 68px;
-    height: 68px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-    border: 3px solid #fff;
-    overflow: hidden;
+            position: absolute;
+            bottom: 33%;
+            left: 266px; 
+            z-index: 20;
+            background: white;
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            border: 3px solid #fff;
+            overflow: hidden;
         }
 
         .media-logo-img {
@@ -342,7 +350,7 @@
         }
 
         .news-title {
-            font-size: 24px; /* Default starting font size */
+            font-size: 24px; 
             font-weight: 700;
             line-height: 1.4;
             color: #111;
@@ -386,7 +394,7 @@
 
     <!-- Control Panel -->
     <div class="control-panel">
-        <h2><i class="fa-solid fa-sliders"></i> নিউজ কার্ড কন্ট্রোল প্যানেল</h2>
+        <h2><i class="fa-solid fa-sliders"></i> নিউজカード কন্ট্রোল প্যানেল</h2>
         
         <!-- Image Upload -->
         <div class="form-group">
@@ -397,22 +405,20 @@
             </div>
         </div>
 
-        <!-- Image Position Adjustments -->
-<div class="form-group">
-    <label><i class="fa-solid fa-arrows-up-down"></i> ইমেজ পজিশন ভার্টিকাল (Y-Axis)</label>
-    <div class="range-slider">
-        <!-- min এবং max ভ্যালু পরিবর্তন করে পিক্সেল করা হয়েছে -->
-        <input type="range" id="imageY" min="-300" max="300" value="0">
-    </div>
-</div>
-
-<div class="form-group">
-    <label><i class="fa-solid fa-maximize"></i> ইমেজ সাইজ জুম (Scale)</label>
-    <div class="range-slider">
-        <!-- জুম স্লাইডারটি ১০০% থেকে ৩০০% পর্যন্ত করা হয়েছে -->
-        <input type="range" id="imageScale" min="100" max="300" value="100">
-    </div>
-</div>
+        <!-- FIXED: পিক্সেল বেইজড রেঞ্জ কন্ট্রোল -->
+        <div class="form-group">
+            <label><i class="fa-solid fa-arrows-up-down"></i> ইমেজ পজিশন ভার্টিকাল (Y-Axis)</label>
+            <div class="range-slider">
+                <input type="range" id="imageY" min="-300" max="300" value="0">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label><i class="fa-solid fa-maximize"></i> ইমেজ সাইজ জুম (Scale)</label>
+            <div class="range-slider">
+                <input type="range" id="imageScale" min="100" max="300" value="100">
+            </div>
+        </div>
 
         <!-- Title Input -->
         <div class="form-group">
@@ -485,7 +491,6 @@
             <!-- Custom Logo Image Embedded Directly -->
             <div class="media-logo-wrapper">
                 <img class="media-logo-img" src="./width_150.webp" alt="Nahdah Logo">
-            
             </div>
 
             <!-- Title Section -->
@@ -535,17 +540,16 @@
 
         // Dynamic Font Resizer to adjust large titles automatically
         function adjustFontSize() {
-            let fontSize = 24; // Default starting font size in pixels
+            let fontSize = 24; 
             cardTitle.style.fontSize = fontSize + "px";
             
-            // Loop to reduce font size down if text height overflows container bounds
             while (cardTextArea.scrollHeight > cardTextArea.clientHeight && fontSize > 14) {
                 fontSize -= 1;
                 cardTitle.style.fontSize = fontSize + "px";
             }
         }
 
-        // Auto-set modern Bengali formatted current date
+        // Auto-set modern Bengali formatted current date[cite: 1]
         function setBengaliDate() {
             const date = new Date();
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -554,7 +558,7 @@
         }
         setBengaliDate();
 
-        // Topic/Keywords Category to Color mapping dictionary
+        // Topic/Keywords Category to Color mapping dictionary[cite: 1]
         const themeMap = {
             'জাতীয়': { accent: '#d32f2f', text: '#111111' },
             'আন্তর্জাতিক': { accent: '#0288d1', text: '#0d47a1' },
@@ -565,7 +569,7 @@
             'ব্রেকিং নিউজ': { accent: '#c62828', text: '#000000' }
         };
 
-        // Handle Image Upload and rendering inside the frame
+        // Handle Image Upload and rendering inside the frame[cite: 1]
         imageLoader.addEventListener('change', function(e) {
             const reader = new FileReader();
             reader.onload = function(event) {
@@ -579,26 +583,25 @@
             }
         });
 
-        // Image positioning & zooming functions
-function updateImageTransform() {
-    const yValue = imageY.value; // পিক্সেল ভ্যালু (যেমন: -50px বা 100px)
-    const scaleValue = imageScale.value; // পারসেন্টেজ ভ্যালু (যেমন: 120%)
-    
-    // html2canvas এর সাপোর্টের জন্য সরাসরি width এবং top পজিশন পরিবর্তন করছি
-    cardImg.style.width = scaleValue + '%';
-    cardImg.style.top = yValue + 'px';
-}
+        // FIXED: html2canvas এর সাথে ১০০% ম্যাচ করার জন্য নতুন উইডথ ও টপ পজিশন ফাংশন
+        function updateImageTransform() {
+            const yValue = imageY.value; 
+            const scaleValue = imageScale.value; 
+            
+            cardImg.style.width = scaleValue + '%';
+            cardImg.style.top = yValue + 'px';
+        }
 
-function resetImageAdjustments() {
-    imageY.value = 0;
-    imageScale.value = 100;
-    updateImageTransform();
-}
+        function resetImageAdjustments() {
+            imageY.value = 0;
+            imageScale.value = 100;
+            updateImageTransform();
+        }
 
         imageY.addEventListener('input', updateImageTransform);
         imageScale.addEventListener('input', updateImageTransform);
 
-        // Dynamic Title text updating with font-scaling trigger
+        // Dynamic Title text updating with font-scaling trigger[cite: 1]
         titleInput.addEventListener('input', function() {
             if(this.value.trim() === "") {
                 cardTitle.innerText = "এখানে নিউজ টাইটেল দিন এবং আকর্ষণীয় নিউজ পোস্টার তৈরি করুন";
@@ -606,10 +609,10 @@ function resetImageAdjustments() {
                 cardTitle.innerText = this.value;
             }
             autoDetectCategoryAndTheme();
-            adjustFontSize(); // Auto size text adjustment trigger
+            adjustFontSize(); 
         });
 
-        // Theme and Category change events
+        // Theme and Category change events[cite: 1]
         categoryInput.addEventListener('change', function() {
             if(this.value === "no_category") {
                 cardCategory.style.display = "none";
@@ -620,7 +623,7 @@ function resetImageAdjustments() {
             applyTheme();
         });
 
-        // Apply theme color settings
+        // Apply theme color settings[cite: 1]
         function applyTheme() {
             const currentCategory = categoryInput.value;
             if (autoColorToggle.checked && currentCategory !== "no_category") {
@@ -638,7 +641,7 @@ function resetImageAdjustments() {
             cardTitle.style.color = activeText;
         }
 
-        // Auto keyword detection inside title to switch category and design automatically
+        // Auto keyword detection inside title to switch category and design automatically[cite: 1]
         function autoDetectCategoryAndTheme() {
             if (!autoColorToggle.checked) return;
             
@@ -658,7 +661,7 @@ function resetImageAdjustments() {
             } else if (titleText.includes('ভয়াবহ') || titleText.includes('ব্রেকিং') || titleText.includes('জরুরি') || titleText.includes('নিহত')) {
                 categoryInput.value = 'ব্রেকিং নিউজ';
             } else {
-                matched = false; // Keep user's manually chosen selection if no keyword fits
+                matched = false; 
             }
             
             if (matched && categoryInput.value !== "no_category") {
@@ -668,7 +671,7 @@ function resetImageAdjustments() {
             applyTheme();
         }
 
-        // Event listeners for color inputs
+        // Event listeners for color inputs[cite: 1]
         accentColorPicker.addEventListener('input', () => {
             autoColorToggle.checked = false; 
             applyTheme();
@@ -679,7 +682,7 @@ function resetImageAdjustments() {
         });
         autoColorToggle.addEventListener('change', applyTheme);
 
-        // Export/Download Poster Card Functionality via html2canvas
+        // FIXED: html2canvas এর জন্য অপ্টিমাইজড ডাউনলোড ফাংশন (allowTaint: false)
         downloadBtn.addEventListener('click', function() {
             downloadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> প্রসেসিং হচ্ছে...';
             downloadBtn.disabled = true;
@@ -688,7 +691,7 @@ function resetImageAdjustments() {
             
             html2canvas(card, {
                 useCORS: true,
-                allowTaint: true,
+                allowTaint: false, 
                 scale: 2, 
                 logging: false
             }).then(canvas => {
@@ -713,7 +716,7 @@ function resetImageAdjustments() {
             });
         });
 
-        // Initialize design styles on load
+        // Initialize design styles on load[cite: 1]
         applyTheme();
     </script>
 </body>
