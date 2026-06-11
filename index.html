@@ -267,17 +267,13 @@
 
         /* Image Display Window */
         .card-image-area {
-            width: 90%;
-            height: 58%;
-            margin: 25px auto 0 auto;
-            background-color: #f0f2f5;
-            border-radius: 14px;
-            overflow: hidden;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+    width: 100%; /* ডিফল্ট উইডথ */
+    height: auto; /* হাইট অটো থাকবে যাতে জুম করলে রেশিও ঠিক থাকে */
+    position: absolute;
+    top: 0; /* আমরা জাভাস্ক্রিপ্ট দিয়ে এই top পরিবর্তন করব */
+    left: 50%;
+    transform: translateX(-50%); /* ছবিকে সবসময় মাঝখানে রাখবে */
+    transition: none; /* লাইভ ড্র্যাগিং বা স্লাইড করার সময় স্মুথনেসের জন্য ট্রানজিশন বন্ধ রাখাই ভালো */
         }
 
         .card-image-area img {
@@ -402,19 +398,21 @@
         </div>
 
         <!-- Image Position Adjustments -->
-        <div class="form-group">
-            <label><i class="fa-solid fa-arrows-up-down"></i> ইমেজ পজিশন ভার্টিকাল (Y-Axis)</label>
-            <div class="range-slider">
-                <input type="range" id="imageY" min="0" max="100" value="50">
-            </div>
-        </div>
-        
-        <div class="form-group">
-            <label><i class="fa-solid fa-maximize"></i> ইমেজ সাইজ জুম (Scale)</label>
-            <div class="range-slider">
-                <input type="range" id="imageScale" min="100" max="200" value="100">
-            </div>
-        </div>
+<div class="form-group">
+    <label><i class="fa-solid fa-arrows-up-down"></i> ইমেজ পজিশন ভার্টিকাল (Y-Axis)</label>
+    <div class="range-slider">
+        <!-- min এবং max ভ্যালু পরিবর্তন করে পিক্সেল করা হয়েছে -->
+        <input type="range" id="imageY" min="-300" max="300" value="0">
+    </div>
+</div>
+
+<div class="form-group">
+    <label><i class="fa-solid fa-maximize"></i> ইমেজ সাইজ জুম (Scale)</label>
+    <div class="range-slider">
+        <!-- জুম স্লাইডারটি ১০০% থেকে ৩০০% পর্যন্ত করা হয়েছে -->
+        <input type="range" id="imageScale" min="100" max="300" value="100">
+    </div>
+</div>
 
         <!-- Title Input -->
         <div class="form-group">
@@ -582,18 +580,20 @@
         });
 
         // Image positioning & zooming functions
-        function updateImageTransform() {
-            const yValue = imageY.value;
-            const scaleValue = imageScale.value / 100;
-            cardImg.style.transform = `scale(${scaleValue})`;
-            cardImg.style.objectPosition = `center ${yValue}%`;
-        }
+function updateImageTransform() {
+    const yValue = imageY.value; // পিক্সেল ভ্যালু (যেমন: -50px বা 100px)
+    const scaleValue = imageScale.value; // পারসেন্টেজ ভ্যালু (যেমন: 120%)
+    
+    // html2canvas এর সাপোর্টের জন্য সরাসরি width এবং top পজিশন পরিবর্তন করছি
+    cardImg.style.width = scaleValue + '%';
+    cardImg.style.top = yValue + 'px';
+}
 
-        function resetImageAdjustments() {
-            imageY.value = 50;
-            imageScale.value = 100;
-            updateImageTransform();
-        }
+function resetImageAdjustments() {
+    imageY.value = 0;
+    imageScale.value = 100;
+    updateImageTransform();
+}
 
         imageY.addEventListener('input', updateImageTransform);
         imageScale.addEventListener('input', updateImageTransform);
