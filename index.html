@@ -304,21 +304,21 @@
 
         /* Center Media Logo from User Link */
         .media-logo-wrapper {
-            position: absolute;
-            bottom: 33%;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 20;
-            background: white;
-            width: 68px;
-            height: 68px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-            border: 3px solid #fff;
-            overflow: hidden;
+           position: absolute;
+    bottom: 33%;
+    /* transform বাদ দিয়ে লোগো মাঝখানে আনার নতুন নিয়ম */
+    left: 266px; /* (৬০০ পিক্সেল কার্ডের মাঝখান = ৩০০ পিক্সেল। লোগোর সাইজ ৬৮ পিক্সেল এর অর্ধেক ৩৪ পিক্সেল বাদ দিলে ২৬৬ পিক্সেল হয়) */
+    z-index: 20;
+    background: white;
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    border: 3px solid #fff;
+    overflow: hidden;
         }
 
         .media-logo-img {
